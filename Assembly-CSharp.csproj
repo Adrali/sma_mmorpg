@@ -54,10 +54,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\AMob.cs" />
+    <Compile Include="Assets\Scripts\OrcScript.cs" />
+    <Compile Include="Assets\Scripts\GoblinScript.cs" />
     <Compile Include="Assets\Scripts\AHuman.cs" />
     <Compile Include="Assets\Scripts\WolfScript.cs" />
-    <Compile Include="Assets\Scripts\GoblinScript.cs" />
-    <Compile Include="Assets\Scripts\OrcScript.cs" />
+    <Compile Include="Assets\Scripts\CameraScript.cs" />
+    <Compile Include="Assets\Scripts\BillboardScript.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4626116679095429858}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -46,7 +46,7 @@ GameObject:
   - component: {fileID: 4626116679234828027}
   - component: {fileID: 4626116679234828026}
   - component: {fileID: 4626116679234828029}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -142,7 +142,7 @@ GameObject:
   - component: {fileID: 4626116679607096848}
   - component: {fileID: 4626116679607096851}
   - component: {fileID: 4626116679607096850}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: RightEye
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -237,7 +237,7 @@ GameObject:
   - component: {fileID: 4626116679971096781}
   - component: {fileID: 4626116679971096780}
   - component: {fileID: 4626116679971096783}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: LeftEye
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -330,9 +330,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4626116680332523446}
   - component: {fileID: 4626116680332523447}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Human
-  m_TagString: Untagged
+  m_TagString: Human
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -380,7 +380,7 @@ GameObject:
   - component: {fileID: 4626116681102119081}
   - component: {fileID: 4626116681102119080}
   - component: {fileID: 4626116681102119083}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Head
   m_TagString: Untagged
   m_Icon: {fileID: 0}

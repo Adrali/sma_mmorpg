@@ -5,16 +5,16 @@ m_ProjectFiles:
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 637696405123684013
-    m_Hash: 3514944958
+      ticks: 637696457700196548
+    m_Hash: 3531869884
   m_LockFileStatus:
     m_FilePath: C:/Users/googl/unity-workspace/sma_mmorpg/Packages/packages-lock.json
     m_PathExists: 1
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 637696405123783746
-    m_Hash: 3518015605
+      ticks: 637696457700206554
+    m_Hash: 51398154
 m_EmbeddedPackageManifests:
   m_ManifestsStatus: {}
 m_PackageAssets:
@@ -68,8 +68,6 @@ m_PackageAssets:
         - 1.9.0
         - 1.10.2
         - 1.11.2
-        - 1.12.5
-        - 1.13.5
         - 2.0.0-preview.6
         - 2.0.0-preview.8
         - 2.0.0-preview.15
@@ -84,8 +82,6 @@ m_PackageAssets:
         - 1.9.0
         - 1.10.2
         - 1.11.2
-        - 1.12.5
-        - 1.13.5
         - 2.0.0-preview.6
         - 2.0.0-preview.8
         - 2.0.0-preview.15

@@ -2,17 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GoblinScript : MonoBehaviour
+public class GoblinScript : AMob
 {
-    // Start is called before the first frame update
-    void Start()
+    void OnEnable()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        pointsDeVie = 15;
+        damages = 10;
+        speed = 4;
     }
 }

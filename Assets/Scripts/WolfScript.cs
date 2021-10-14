@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class WolfScript : AMob
 {
-    // Start is called before the first frame update
-    void Awake()
+    void OnEnable()
     {
+        pointsDeVie = 10;
+        damages = 5;
         speed = 5;
     }
 }

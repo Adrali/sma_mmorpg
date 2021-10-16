@@ -128,7 +128,7 @@ public abstract class AMob : MonoBehaviour, Damageable
                 else if (attackTimer <= 0f) //Si on a le bon timing, on peut attaquer
                 {
                     target.GetComponent<Damageable>().TakeDamage(damages, this);
-                    attackTimer = AttackCooldown;
+                    attackTimer = AttackCooldown + Random.Range(-0.2f, 0.2f);
                 }
                 break;
         }

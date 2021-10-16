@@ -85,10 +85,10 @@ public class HumanScript : MonoBehaviour, Damageable
                     currentEtat = etat.Walk;
                     return this;
                 }
-                else return null;
             }
-            //Sinon, on est interesse que si la quete est plus facile
-            else if (newQuete.getPeril() < currentQuete.getPeril())
+
+            //Cas d'arret : on prend la quete si elle moins perilleuse que la notre
+            if (newQuete.getPeril() < currentQuete.getPeril())
             {
                 copain = autreHumain;
                 currentEtat = etat.Walk;
@@ -139,7 +139,7 @@ public class HumanScript : MonoBehaviour, Damageable
         if (attackTimer > 0) attackTimer -= Time.fixedDeltaTime; //On reduit le timer d'attaque en permanence
         etatUI.text = currentEtat.ToString();
         queteUI.text = currentQuete.GetQueteStatus() + " niveau " + niveau + " (" + (experience/niveau) + "%)";
-        PdVUI.text = currentPointsDeVie + "/" + pointsDeVie;
+        PdVUI.text = currentPointsDeVie.ToString();
 
         switch (currentEtat)
         {
@@ -195,7 +195,7 @@ public class HumanScript : MonoBehaviour, Damageable
                 else if (attackTimer <= 0f) //Si on a le bon timing, on peut attaquer
                 {
                     target.GetComponent<Damageable>().TakeDamage(damages, this);
-                    attackTimer = AttackCooldown;
+                    attackTimer = AttackCooldown + Random.Range(-0.2f, 0.2f);
                 }
                 break;
 
@@ -295,7 +295,11 @@ public class HumanScript : MonoBehaviour, Damageable
             //On retire les humains inactifs, et on desactive notre pote si il est mort
             if (!humainsAutour[i].gameObject.activeSelf)
             {
-                if (humainsAutour[i] == copain) copain = null;
+                if (humainsAutour[i] == copain)
+                {
+                    copain = null;
+                    Tshirt.material.SetColor("_Color", Color.black);
+                }
                 humainsAutour.RemoveAt(i);
             }
         }
@@ -309,7 +313,7 @@ public class HumanScript : MonoBehaviour, Damageable
         foreach (AMob monstre in monstresAutour)
         {
             //On esquive les monstres qui ne font pas partis de la quete
-            if (Vector3.Distance(monstre.GetComponentInParent<Rigidbody>().position, humanRigidbody.position) < closestMonsterDistance && monstre.tag != currentQuete.GetTag())
+            if (Vector3.Distance(monstre.GetComponentInParent<Rigidbody>().position, humanRigidbody.position) < closestMonsterDistance && ((currentEtat != etat.Rush && currentEtat != etat.Attack) || (monstre.tag != currentQuete.GetTag() && currentEtat == etat.Rush && currentEtat == etat.Attack)))
             {
                 closestMonster = monstre.GetComponentInParent<Rigidbody>();
                 closestMonsterDistance = Vector3.Distance(closestMonster.position, humanRigidbody.position);
@@ -336,7 +340,7 @@ public class HumanScript : MonoBehaviour, Damageable
         //Et dans tout les cas on se heal et on retourne au charbon
         currentPointsDeVie = pointsDeVie;
         //Si on a pas de pote, c'est le moment d'en chercher un
-        if (copain == null)
+        if (copain == null && currentQuete.getRecompense() + experience < niveau * 100)
         {
             waitTimer = currentQuete.getPeril() / Random.Range(2f, 5f);
             currentEtat = etat.Wait;

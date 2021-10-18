@@ -109,8 +109,8 @@ public class HumanScript : MonoBehaviour, Damageable
     public void GetNewTarget(Rigidbody newTarget)
     {
         target = newTarget;
-        if (target == null) currentEtat = etat.Walk;
-        else currentEtat = etat.Rush;
+        if (target == null && currentEtat != etat.Return) currentEtat = etat.Walk;
+        else if (currentEtat != etat.Return) currentEtat = etat.Rush;
     }
 
     //Utilise pour recevoir un nouveau TShirt lorsqu'on rentre dans une equipe
@@ -133,6 +133,7 @@ public class HumanScript : MonoBehaviour, Damageable
 
     private void FixedUpdate()
     {
+        if (target != null && !target.gameObject.activeSelf) target = null;
         VerifierMonstres();
         VerifierHumains();
 
@@ -175,27 +176,35 @@ public class HumanScript : MonoBehaviour, Damageable
                 break;
 
             case etat.Rush:
-                //Si la quete est fini on a juste a return
-                if (currentQuete.GetQuestDone()) currentEtat = etat.Return;
-                //On regarde dans le bon sens
-                transform.LookAt(target.position);
-                if (Vector3.Distance(target.position, humanRigidbody.position) < 1.4f) currentEtat = etat.Attack; //Si on est assez proche on s'arrete et on tape
-                else humanRigidbody.position += (target.position - humanRigidbody.position).normalized * speed * Time.fixedDeltaTime; //Sinon, on avance vers la cible
-                //On verifie si il y a un monstre trop proche qu'il faut fuir
-                GetClosestMonster();
-                if (closestMonsterDistance < 2.9f) currentEtat = etat.Dodge;
+                if (target == null) FindNewTarget();
+                else
+                {
+                    //Si la quete est fini on a juste a return
+                    if (currentQuete.GetQuestDone()) currentEtat = etat.Return;
+                    //On regarde dans le bon sens
+                    transform.LookAt(target.position);
+                    if (Vector3.Distance(target.position, humanRigidbody.position) < 1.4f) currentEtat = etat.Attack; //Si on est assez proche on s'arrete et on tape
+                    else humanRigidbody.position += (target.position - humanRigidbody.position).normalized * speed * Time.fixedDeltaTime; //Sinon, on avance vers la cible
+                                                                                                                                          //On verifie si il y a un monstre trop proche qu'il faut fuir
+                    GetClosestMonster();
+                    if (closestMonsterDistance < 2.9f) currentEtat = etat.Dodge;
+                }
                 break;
 
             case etat.Attack:
-                //Si la quete est fini on a juste a return
-                if (currentQuete.GetQuestDone()) currentEtat = etat.Return;
-                //On regarde dans le bon sens
-                transform.LookAt(target.position);
-                if (Vector3.Distance(target.position, humanRigidbody.position) > 1.6f) currentEtat = etat.Rush; //Si la cible s'est eloignee il faut la pourchasser
-                else if (attackTimer <= 0f) //Si on a le bon timing, on peut attaquer
+                if (target == null) FindNewTarget();
+                else
                 {
-                    target.GetComponent<Damageable>().TakeDamage(damages, this);
-                    attackTimer = AttackCooldown + Random.Range(-0.2f, 0.2f);
+                    //Si la quete est fini on a juste a return
+                    if (currentQuete.GetQuestDone()) currentEtat = etat.Return;
+                    //On regarde dans le bon sens
+                    transform.LookAt(target.position);
+                    if (Vector3.Distance(target.position, humanRigidbody.position) > 1.6f) currentEtat = etat.Rush; //Si la cible s'est eloignee il faut la pourchasser
+                    else if (attackTimer <= 0f) //Si on a le bon timing, on peut attaquer
+                    {
+                        target.GetComponent<Damageable>().TakeDamage(damages, this);
+                        attackTimer = AttackCooldown + Random.Range(-0.2f, 0.2f);
+                    }
                 }
                 break;
 
@@ -250,6 +259,24 @@ public class HumanScript : MonoBehaviour, Damageable
                 }
                 break;
         }
+    }
+
+    //Trouver la cible la plus proche en vue
+    private void FindNewTarget()
+    {
+        float plusProche = 1000;
+        //On cherche le bon mob le plus proche de nous
+        foreach (AMob monstre in monstresAutour)
+        {
+            if (monstre.tag == currentQuete.GetTag() && Vector3.Distance(monstre.GetComponentInParent<Rigidbody>().position, humanRigidbody.position) < plusProche)
+            {
+                target = monstre.GetComponentInParent<Rigidbody>();
+                plusProche = Vector3.Distance(target.position, humanRigidbody.position);
+            }
+        }
+        //Dans le cas ou il n'y en a pas, on va voir ailleurs
+        if (target == null) currentEtat = etat.Walk;
+        if (copain != null) copain.GetNewTarget(target);
     }
 
     //Les entites entrent dans le champ de vision, il faut les reconnaitre
@@ -340,7 +367,7 @@ public class HumanScript : MonoBehaviour, Damageable
         //Et dans tout les cas on se heal et on retourne au charbon
         currentPointsDeVie = pointsDeVie;
         //Si on a pas de pote, c'est le moment d'en chercher un
-        if (copain == null && currentQuete.getRecompense() + experience < niveau * 100)
+        if (copain == null)
         {
             waitTimer = currentQuete.getPeril() / Random.Range(2f, 5f);
             currentEtat = etat.Wait;
@@ -371,20 +398,8 @@ public class HumanScript : MonoBehaviour, Damageable
         //Sinon, on continue la quete
         else
         {
-            float plusProche = 1000;
-            //On cherche le bon mob le plus proche de nous
-            foreach(AMob monstre in monstresAutour)
-            {
-                if(monstre.tag == currentQuete.GetTag() && Vector3.Distance(monstre.GetComponentInParent<Rigidbody>().position, humanRigidbody.position) < plusProche)
-                {
-                    target = monstre.GetComponentInParent<Rigidbody>();
-                    plusProche = Vector3.Distance(target.position, humanRigidbody.position);
-                }
-            }
-            //Dans le cas ou il n'y en a pas, on va voir ailleurs
-            if(target == null) currentEtat = etat.Walk;
+            FindNewTarget();
         }
-        if (copain != null) copain.GetNewTarget(target);
     }
 
     public void TakeDamage(int damages, Damageable attacker)
